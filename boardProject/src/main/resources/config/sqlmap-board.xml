@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="boardDao"> 
+ 
+	<select id="count" resultType="int">
+		SELECT count(*) FROM BOARD
+	</select> 
+	
+	<select id="list" parameterType="hashmap" resultType="boardDto">
+		<![CDATA[select * from (select rownum RNUM, NUM, WRITER, EMAIL, SUBJECT, PASS, REGDATE, 
+		READCOUNT, REF, STEP, DEPTH, CONTENT from (select * from BOARD order by num desc,REF desc, STEP asc))
+		where RNUM >= #{start} and RNUM <= #{end} ]]>
+	</select> 
+	
+	<select id="selectNum" resultType="int"> 
+		SELECT max(num) from BOARD
+	</select>
+	 
+	<update id="replyUpdate" parameterType="boardDto">
+		UPDATE BOARD SET step = step + 1 WHERE ref = #{ref} AND step > #{step}	
+	</update>
+	 
+	<insert id="insert" parameterType="boardDto">
+		INSERT INTO board(NUM, WRITER, EMAIL, SUBJECT, PASS, REGDATE, REF, STEP, DEPTH, IP, CONTENT, FILENAME, FILESIZE)
+		values(BOARD_SEQ.nextval, #{writer}, #{email}, #{subject}, #{pass}, SYSDATE, #{ref}, #{step}, #{depth}, #{ip},#{content}, #{filename}, #{filesize})
+		<selectKey keyProperty="num" resultType="Integer">
+			SELECT NVL(MAX(num), 0 ) FROM BOARD
+		</selectKey>
+	</insert>
+	
+	<update id="readcountUpdate" parameterType="int">
+		UPDATE board SET readcount=readcount+1 WHERE num = #{num}
+	</update>
+	
+	<select id="articleSelect" parameterType="int" resultType="boardDto">
+		SELECT * FROM board WHERE num = #{num}
+	</select>
+	
+	<select id="selectPass" parameterType="boardDto">
+		SELECT pass FROM board WHERE num = #{num}
+	</select>
+	
+	<update id="articleUpdate" parameterType="boardDto">
+		UPDATE board SET email=#{email},subject=#{subject},content=#{content} WHERE num=#{num} AND pass=#{pass}
+	</update>
+	
+	<delete id="deleteArticle" parameterType="boardDto"> 
+		DELETE FROM BOARD WHERE num = #{num} AND pass = #{pass}
+	</delete>
+	
+</mapper>
