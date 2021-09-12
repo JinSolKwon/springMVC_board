@@ -115,7 +115,11 @@ public class BoardController{
 			boardDto.setFilename(fileName);
 			boardDto.setFilesize(size);
 			boardDto.setIp(ip);
-		} 
+		} else {
+			boardDto.setFilename("");
+			boardDto.setFilesize(0);
+			boardDto.setIp(ip);
+		}
 		
 		if(bindingResult.hasErrors()) {
 			return "/board/write"; 
