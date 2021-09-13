@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 public class BoardDto {
 	private int num;
 	private String writer;
-	private String email;
+	private String email; 
 	private String subject;
 	private String pass;
 	private int readcount;
@@ -104,6 +104,5 @@ public class BoardDto {
 	public void setFilesize(long filesize) {
 		this.filesize = filesize;
 	}
-	
 	
 }

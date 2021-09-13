@@ -40,7 +40,14 @@ public class BoardDaoImpl implements BoardDao {
 		int step = article.getStep();
 		int depth = article.getDepth();
 		int number = 0;
+		
+		if(sqlSessionTemplate.selectOne("selectNum") != null) {
 		number = sqlSessionTemplate.selectOne("selectNum");
+		}
+		
+		System.out.println(num);
+		System.out.println(number);
+		
 		if (number != 0) {
 			number += 1;
 		} else {
@@ -48,11 +55,16 @@ public class BoardDaoImpl implements BoardDao {
 		}
 		if (num != 0) {
 			sqlSessionTemplate.update("replyUpdate", article);
+			step = step + 1;
+			depth = depth +1;
 		} else {
 			ref = number;
 			step = 0;
 			depth = 0;
 		}
+		article.setRef(ref);
+		article.setStep(step);
+		article.setDepth(depth);
 		sqlSessionTemplate.insert("insert", article);
 	}
 
@@ -78,18 +90,6 @@ public class BoardDaoImpl implements BoardDao {
 	// DB에서 글을 삭제하는 메서드
 	@Override
 	public int deleteArticle(BoardDto article) {
-//		BoardDto vo = sqlSessionTemplate.selectOne("articleSelect", article.getNum());
-//		String filename = vo.getFilename();
-//	
-//			if (!filename.equals("")) {
-//				File dir = new File("d:\\javastudy\\jspupload");
-//				File[] files = dir.listFiles();
-//				for (File f : files) {
-//					if (f.getName().equals(filename)) {
-//						f.delete();
-//					}
-//				}
-//			}
 		return sqlSessionTemplate.delete("deleteArticle", article);
 	}
 }

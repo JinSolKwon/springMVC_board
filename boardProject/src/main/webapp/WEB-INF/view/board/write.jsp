@@ -7,8 +7,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>자료실</title>
 <script src="${pageContext.request.contextPath}/board/script.js"></script>
-<link href="${pageContext.request.contextPath}/board/css/style.css" rel="stylesheet" type="text/css"/>
-<link href="${pageContext.request.contextPath}/board/css/writeFormstyle.css" rel="stylesheet" type="text/css"/>
+<link href="${pageContext.request.contextPath}/resources/css/style.css" rel="stylesheet" type="text/css"/>
+<link href="${pageContext.request.contextPath}/resources/css/writeFormstyle.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <section>

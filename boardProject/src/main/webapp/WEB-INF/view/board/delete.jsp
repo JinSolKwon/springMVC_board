@@ -3,7 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
-<link href="${pageContext.request.contextPath}/board/css/style.css" rel="stylesheet" type="text/css"/>
 <head>
 <meta charset="UTF-8">
 <title>게시판</title>
@@ -16,8 +15,8 @@
 		}
 	}
 </script>
-<link href="${pageContext.request.contextPath}/board/css/style.css" rel="stylesheet" type="text/css"/>
-<link href="${pageContext.request.contextPath}/board/css/deleteFormstyle.css" rel="stylesheet" type="text/css"/>
+<link href="${pageContext.request.contextPath}/resources/css/style.css" rel="stylesheet" type="text/css"/>
+<link href="${pageContext.request.contextPath}/resources/css/deleteFormstyle.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <section>
