@@ -11,6 +11,6 @@
 	</settings>
 	
 	<typeAliases>
-		<typeAlias alias="boardDto" type="model.BoardDto"/>  
+		<typeAlias alias="boardDto" type="model.BoardDto"/>
 	</typeAliases>
 </configuration>  

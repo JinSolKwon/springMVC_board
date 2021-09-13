@@ -10,7 +10,7 @@
 	
 	<select id="list" parameterType="hashmap" resultType="boardDto">
 		<![CDATA[select * from (select rownum RNUM, NUM, WRITER, EMAIL, SUBJECT, PASS, REGDATE, 
-		READCOUNT, REF, STEP, DEPTH, CONTENT from (select * from BOARD order by num desc,REF desc, STEP asc))
+		READCOUNT, REF, STEP, DEPTH, CONTENT from (select * from BOARD order by REF desc, STEP asc))
 		where RNUM >= #{start} and RNUM <= #{end} ]]>
 	</select> 
 	

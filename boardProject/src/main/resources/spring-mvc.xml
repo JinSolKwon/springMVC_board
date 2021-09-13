@@ -16,7 +16,7 @@
 		<mvc:jsp prefix="/WEB-INF/view/"/>  
 	</mvc:view-resolvers>
 	
-	<mvc:resources mapping="/css/**" location="/css/"></mvc:resources>
+	<mvc:resources mapping="/resources/**" location="/resources/"></mvc:resources>	
 	
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basenames">

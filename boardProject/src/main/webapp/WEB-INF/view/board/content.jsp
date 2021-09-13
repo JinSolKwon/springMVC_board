@@ -7,19 +7,14 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>자료실</title>
 <script src="${pageContext.request.contextPath}/board/script.js"></script> 
-<link href="${pageContext.request.contextPath}/board/css/style.css" rel="stylesheet" type="text/css"/>
-<link href="${pageContext.request.contextPath}/board/css/contentstyle.css" rel="stylesheet" type="text/css"/>
+<link href="${pageContext.request.contextPath}/resources/css/style.css" rel="stylesheet" type="text/css"/>
+<link href="${pageContext.request.contextPath}/resources/css/contentstyle.css" rel="stylesheet" type="text/css"/>
 </head>
 <body> 
 <section>
 <b>글내용 보기</b>  
 <br>
 <form>
-
-	<input type="hidden" name="num" value="${article.num}">
-	<input type="hidden" name="ref" value="${article.ref}">
-	<input type="hidden" name="step" value="${article.step}">
-	<input type="hidden" name="depth" value="${article.depth}">
 
 <table class="contenttable">
 	<tr>
@@ -45,7 +40,7 @@
 	</tr>
 	<tr>
 		<th>첨부파일</th>
-		<td colspan="3" class="file"><a href="${pageContext.request.contextPath}/board/downloadPro.do?num=${article.num}">${article.filename}</a>
+		<td colspan="3" class="file"><a href="<c:url value="/board/download/${article.num}"/>">${article.filename}</a>
 	</tr>
 	<tr>
 		<td colspan="4">
@@ -53,9 +48,9 @@
 		&nbsp;&nbsp;&nbsp;&nbsp;
 		<input type="button" value="삭 제" onClick="document.location.href='<c:url value="/board/delete/${num}"/>'">
 		&nbsp;&nbsp;&nbsp;&nbsp;
-		<input type="button" value="답 글" onClick="document.location.href='<c:url value="/board/write"/>'">
+		<input type="button" value="답 글" onClick="document.location.href='<c:url value="/board/write/${num}"/>'">
 		&nbsp;&nbsp;&nbsp;&nbsp;
-		<input type="button" value="목 록" onClick="document.location.href='<c:url value="/board/list?pageNum=${currentPage}"/>'">
+		<input type="button" value="목 록" onClick="document.location.href='<c:url value="/board/list"/>'">
 		&nbsp;&nbsp;&nbsp;&nbsp;
 	</td>
 	</tr>

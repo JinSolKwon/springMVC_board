@@ -1,11 +1,16 @@
 package controller;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -29,7 +34,7 @@ import model.BoardService;
 public class BoardController{
 	private BoardService boardService;
 	
-	private static final String FILE_PATH = "d:\\javastudy\\jspupload";
+	private static final String FILE_PATH ="d:\\javastudy\\jspupload";
 
 	public void setBoardService(BoardService boardService) {
 		this.boardService = boardService;
@@ -53,7 +58,7 @@ public class BoardController{
 		count = boardService.articleCount();	// 전체 글 개수
 		if(count > 0) {
 			articleList = boardService.list(startRow, endRow);
-		} else {
+		} else { 
 			articleList = Collections.emptyList();
 		}
 		number = count - (currentPage - 1) * pageSize;	//글 목록에 표시할 글 번호
@@ -69,34 +74,85 @@ public class BoardController{
 		return "/board/list";
 	}
 	
-	@RequestMapping(value="/board/content/{num},{pageNum}")
-	public String read(Model model, @PathVariable int num) { 
+	@RequestMapping(value="/board/download/{num}")
+	public void download(@PathVariable int num ,HttpServletResponse resp, HttpServletRequest req) {
+		BoardDto vo = boardService.read(num);
+		String filename = vo.getFilename();
+		
+		File downFile = new File(FILE_PATH + "\\"+ filename);
+		
+		if (downFile.exists() && downFile.isFile()) {
+			try {
+				filename = URLEncoder.encode(filename, "utf-8").replaceAll("\\+","%20");
+				long filesize = downFile.length();
+				
+				resp.setContentType("application/octet-stream; charset=utf-8");
+				resp.setContentLength((int) filesize);
+				String strClient = req.getHeader("user-agent");
+				
+				if (strClient.indexOf("MSIE 5.5") != -1) {
+					resp.setHeader("Content-Disposition", "filename="
+                            + filename + ";");
+                } else {
+                	resp.setHeader("Content-Disposition",
+                            "attachment; filename=" + filename + ";");
+                }
+				resp.setHeader("Content-Length", String.valueOf(filesize));
+				resp.setHeader("Content-Transfer-Encoding", "binary;");
+				resp.setHeader("Pragma", "no-cache");
+				resp.setHeader("Cache-Control", "private");
+ 
+                byte b[] = new byte[1024];
+ 
+                BufferedInputStream in = new BufferedInputStream(
+                        new FileInputStream(downFile));
+ 
+                BufferedOutputStream out = new BufferedOutputStream(
+                		resp.getOutputStream());
+ 
+                int read = 0;
+ 
+                while ((read = in.read(b)) != -1) {
+                    out.write(b, 0, read);
+                }
+                out.flush();
+                out.close();
+                in.close();
+				
+			} catch (Exception e) {
+				System.out.println("Download Exception : " + e.getMessage());
+			}
+		} else {
+			System.out.println("Download Error : downFile Error [" + downFile + "]");
+		}
+		 
+	}
+	
+	@RequestMapping(value="/board/content/{num}")
+	public String read(Model model, @PathVariable int num ) {
 		model.addAttribute("article", boardService.read(num));
 		return "/board/content";
 	}
 	
 	@GetMapping(value="/board/write")
-	public String write(Model model,
-			@RequestParam(value = "num", required =false, defaultValue = "0")int num,
-			@RequestParam(value = "ref", required =false, defaultValue = "1")int ref, 
-			@RequestParam(value = "step", required =false, defaultValue = "0")int step,
-			@RequestParam(value = "depth", required =false, defaultValue = "0")int depth,
-			HttpServletRequest req
-			) {
-		
-		
-		if (req.getParameter("num") != null) {
-			num = Integer.parseInt(req.getParameter("num"));
-			ref = Integer.parseInt(req.getParameter("ref"));
-			step = Integer.parseInt(req.getParameter("step"));
-			depth = Integer.parseInt(req.getParameter("depth"));
-		}
-		
+	public String write(Model model) {
+	
+		int num = 0, ref = 1, step = 0,depth = 0; 
 		BoardDto dto = new BoardDto();
 		dto.setNum(num);
 		dto.setRef(ref);
 		dto.setStep(step);
 		dto.setDepth(depth);
+		
+		model.addAttribute("article", dto);
+		return "/board/write";
+	}
+	
+	@GetMapping(value="/board/write/{num}")
+	public String write(Model model,
+			@PathVariable int num
+			) {
+		BoardDto dto = boardService.read(num);
 		
 		model.addAttribute("article", dto);
 		return "/board/write";
@@ -111,8 +167,7 @@ public class BoardController{
 		
 		if(!file.getOriginalFilename().isEmpty()) {
 			file.transferTo(new File(FILE_PATH, fileName));
-			
-			boardDto.setFilename(fileName);
+			boardDto.setFilename(fileName); 
 			boardDto.setFilesize(size);
 			boardDto.setIp(ip);
 		} else {
@@ -136,7 +191,7 @@ public class BoardController{
 		return "board/edit";
 	}
 	
-	@PostMapping(value="/board/edit")
+	@PostMapping(value="/board/edit/{num}")
 	public String edit(@Valid @ModelAttribute BoardDto boardDto, BindingResult result, String pwd, SessionStatus sessionStatus, Model model) {
 		if(result.hasErrors()) {
 			return "/board/edit";
@@ -144,7 +199,7 @@ public class BoardController{
 			if(boardDto.getPass().equals(pwd)) {
 			boardService.edit(boardDto);
 			sessionStatus.setComplete();   
-			return "redirect:/board/content/{num},{currentPage}";
+			return "redirect:/board/content/{num}"; 
 			}
 		}
 		model.addAttribute("msg", "비밀번호가 일치하지 않습니다.");
@@ -162,9 +217,24 @@ public class BoardController{
 		int rowCount;
 		BoardDto boardDto = new BoardDto();
 		boardDto.setNum(num);
-		boardDto.setPass(pwd);
-		System.out.println(boardDto.getNum());
-		System.out.println(boardDto.getPass()); 
+		boardDto.setPass(pwd); 
+		
+		String filename = boardService.read(num).getFilename();
+		
+		System.out.println(filename);
+		if(filename == null) {
+			filename= "";
+		}
+		
+		if (!filename.equals("")) {
+			File dir = new File(FILE_PATH);
+			File[] files = dir.listFiles();
+			for (File f : files) {
+				if (f.getName().equals(filename)) {
+					f.delete();
+				}
+			}
+		}
 		
 		rowCount = boardService.delete(boardDto);
 		
