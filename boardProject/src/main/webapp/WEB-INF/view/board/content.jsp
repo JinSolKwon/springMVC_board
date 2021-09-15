@@ -15,7 +15,7 @@
 <b>글내용 보기</b>  
 <br>
 <form>
-
+	<input type="hidden" >
 <table class="contenttable">
 	<tr>
 		<th>글 번호</th>
@@ -50,7 +50,7 @@
 		&nbsp;&nbsp;&nbsp;&nbsp;
 		<input type="button" value="답 글" onClick="document.location.href='<c:url value="/board/write/${num}"/>'">
 		&nbsp;&nbsp;&nbsp;&nbsp;
-		<input type="button" value="목 록" onClick="document.location.href='<c:url value="/board/list"/>'">
+		<input type="button" value="목 록" onClick="document.location.href='<c:url value="/board/list?pageNum=${pageNum}"/>'">
 		&nbsp;&nbsp;&nbsp;&nbsp;
 	</td>
 	</tr>

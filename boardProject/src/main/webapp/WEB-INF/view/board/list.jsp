@@ -47,16 +47,16 @@
 		</td>
 		<td class="titled">
 			<c:if test="${article.depth > 0}">
-				<img src="<c:url value="${pageContext.request.contextPath}/resources/images/level.gif"/>" width="${5 * article.depth}">
-				<img src="<c:url value="${pageContext.request.contextPath}/resources/images/re.gif"/>">
+				<img src="${pageContext.request.contextPath}/resources/images/level.gif" width="${5 * article.depth}">
+				<img src="${pageContext.request.contextPath}/resources/images/re.gif">
 			</c:if>
 			<c:if test="${article.depth == 0}">
-				<img src="<c:url value="${pageContext.request.contextPath}/resources/images/level.gif"/>" width="${5 * article.depth}">
+				<img src="${pageContext.request.contextPath}/resources/images/level.gif" width="${5 * article.depth}">
 			</c:if>
 			<a href="<c:url value="/board/content/${article.num}"/>">
-				${article.subject}</a>
+				${article.subject} </a> 
 			<c:if test="${article.readcount >= 20}">
-				<img src="<c:url value="${pageContext.request.contextPath}/resources/images/hot.gif"/>">
+				<img src="${pageContext.request.contextPath}/resources/images/hot.gif">
 			</c:if>
 		</td>
 		<td>

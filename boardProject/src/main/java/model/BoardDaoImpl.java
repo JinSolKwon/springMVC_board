@@ -1,7 +1,5 @@
 package model;
 
-import java.io.File;
-
 import java.util.HashMap;
 import java.util.List;
 
@@ -44,9 +42,6 @@ public class BoardDaoImpl implements BoardDao {
 		if(sqlSessionTemplate.selectOne("selectNum") != null) {
 		number = sqlSessionTemplate.selectOne("selectNum");
 		}
-		
-		System.out.println(num);
-		System.out.println(number);
 		
 		if (number != 0) {
 			number += 1;

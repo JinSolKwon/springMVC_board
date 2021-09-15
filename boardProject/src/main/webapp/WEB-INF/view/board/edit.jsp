@@ -44,7 +44,7 @@
 					<input type="submit" value="글 수정">
 					<input type="reset" value="다시작성">
 					<input type="button" value="목록보기" 
-						Onclick="window.location='<c:url value="/board/list"/>'">
+						Onclick="window.location='<c:url value="/board/list?pageNum=${pageNum}"/>'">
 				</td>
 			</tr>					
 		</table>

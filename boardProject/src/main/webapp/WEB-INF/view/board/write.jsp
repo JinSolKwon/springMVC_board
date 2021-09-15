@@ -21,6 +21,7 @@
 	<input type="hidden" name="ref" value="${article.ref}">
 	<input type="hidden" name="step" value="${article.step}">
 	<input type="hidden" name="depth" value="${article.depth}">
+	<input type="hidden" name="pageNum" value="${pageNum}">
 	
 	<table class="board">
 		<tr>
@@ -54,7 +55,7 @@
 			<td colspan="2" class="attr">
 				<input type="submit" value="글쓰기">
 				<input type="reset" value="다시작성">
-				<input type="button" value="목록" onClick="window.location='<c:url value="/board/list"/>'">
+				<input type="button" value="목록" onClick="window.location='<c:url value="/board/list?pageNum=${pageNum}"/>'">
 			</td>
 		</tr>
 		</table>

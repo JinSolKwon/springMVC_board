@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -39,12 +40,13 @@ public class BoardController{
 	public void setBoardService(BoardService boardService) {
 		this.boardService = boardService;
 	}
-
-	@RequestMapping(value="/board/list")
-	public String list(@RequestParam(value = "pageNum", required =false, defaultValue = "0")int pageNum ,
-			Model model) {
+	
+	@RequestMapping(value="/board/list") 
+	public String list(@RequestParam(name="pageNum", required=false, defaultValue="0")int pageNum ,
+			Model model, HttpSession session) {
+		
 		if (pageNum == 0) {
-			pageNum = 1;
+		pageNum = 1; 
 		}
 		int pageSize = 10; //한 페이지당 글의 개수
 		int currentPage = pageNum;
@@ -62,7 +64,7 @@ public class BoardController{
 			articleList = Collections.emptyList();
 		}
 		number = count - (currentPage - 1) * pageSize;	//글 목록에 표시할 글 번호
-		 
+		
 		model.addAttribute("currentPage",new Integer(currentPage));
 		model.addAttribute("startRow",new Integer(startRow));
 		model.addAttribute("endRow",new Integer(endRow));
@@ -70,6 +72,8 @@ public class BoardController{
 		model.addAttribute("pageSize",new Integer(pageSize)); 
 		model.addAttribute("number",new Integer(number));
 		model.addAttribute("articleList",articleList);
+		
+		session.setAttribute("pageNum", pageNum);
 		
 		return "/board/list";
 	}
@@ -129,13 +133,14 @@ public class BoardController{
 	}
 	
 	@RequestMapping(value="/board/content/{num}")
-	public String read(Model model, @PathVariable int num ) {
+	public String read(Model model, @PathVariable int num, HttpSession req) {
 		model.addAttribute("article", boardService.read(num));
+		model.addAttribute("pageNum", req.getAttribute("pageNum"));
 		return "/board/content";
 	}
 	
 	@GetMapping(value="/board/write")
-	public String write(Model model) {
+	public String write(Model model,HttpSession session) {
 	
 		int num = 0, ref = 1, step = 0,depth = 0; 
 		BoardDto dto = new BoardDto();
@@ -145,26 +150,30 @@ public class BoardController{
 		dto.setDepth(depth);
 		
 		model.addAttribute("article", dto);
+		
 		return "/board/write";
 	}
 	
 	@GetMapping(value="/board/write/{num}")
 	public String write(Model model,
-			@PathVariable int num
+			@PathVariable int num, HttpSession session
 			) {
+		int pageNum = (int)session.getAttribute("pageNum");
 		BoardDto dto = boardService.read(num);
 		
 		model.addAttribute("article", dto);
+		model.addAttribute("pageNum", pageNum);
 		return "/board/write";
 	}
 	
 	@PostMapping(value="/board/write")
-	public String write(@RequestParam("file")MultipartFile file, @Valid BoardDto boardDto, BindingResult bindingResult, HttpServletRequest req) 
-																			throws IllegalStateException, IOException{
+	public String write(@RequestParam("file")MultipartFile file, @Valid BoardDto boardDto, BindingResult bindingResult,
+			HttpServletRequest req, HttpSession session) throws IllegalStateException, IOException{
 		String ip = req.getRemoteAddr();
 		String fileName = file.getOriginalFilename();
 		long size = file.getSize();
-		
+		int pageNum = (int)session.getAttribute("pageNum");
+
 		if(!file.getOriginalFilename().isEmpty()) {
 			file.transferTo(new File(FILE_PATH, fileName));
 			boardDto.setFilename(fileName); 
@@ -176,18 +185,23 @@ public class BoardController{
 			boardDto.setIp(ip);
 		}
 		
+		if (boardDto.getNum() == 0) {
+			session.setAttribute("pageNum", 0);
+		}
+		
 		if(bindingResult.hasErrors()) {
 			return "/board/write"; 
 		}
 		boardService.write(boardDto);
-		return "redirect:/board/list";
+		return "redirect:/board/list?pageNum="+pageNum;
 	}
 	
 	@GetMapping(value="/board/edit/{num}")
-	public String edit(@PathVariable int num, Model model) {
+	public String edit(@PathVariable int num, Model model, HttpSession session) {
+		int pageNum = (int)session.getAttribute("pageNum");
 		BoardDto boardDto = boardService.editRead(num);
 		model.addAttribute("article", boardDto);
-		
+		model.addAttribute("pageNum",pageNum);
 		return "board/edit";
 	}
 	
@@ -213,15 +227,17 @@ public class BoardController{
 	}
 	
 	@PostMapping(value="/board/delete/{num}")
-	public String delete(int num, String pwd, Model model) {
+	public String delete(int num, String pwd, Model model, HttpSession req
+			) {
+		int pageNum = (int)req.getAttribute("pageNum");
 		int rowCount;
 		BoardDto boardDto = new BoardDto();
 		boardDto.setNum(num);
 		boardDto.setPass(pwd); 
 		
+		
 		String filename = boardService.read(num).getFilename();
 		
-		System.out.println(filename);
 		if(filename == null) {
 			filename= "";
 		}
@@ -243,7 +259,7 @@ public class BoardController{
 			model.addAttribute("msg", "비밀번호가 일치하지 않습니다.");
 			return "/board/delete";
 		} else { 
-			return "redirect:/board/list"; 
+			return "redirect:/board/list?pageNum="+pageNum; 
 		}
 	}
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="boardDao">  
+<mapper namespace="boardDao">   
  
 	<select id="count" resultType="int">
 		SELECT count(*) FROM BOARD
@@ -14,7 +14,7 @@
 		where RNUM >= #{start} and RNUM <= #{end} ]]>
 	</select> 
 	
-	<select id="selectNum" resultType="int">  
+	<select id="selectNum" resultType="int">    
 		SELECT max(num) from BOARD
 	</select>
 	 
@@ -38,7 +38,7 @@
 		SELECT * FROM board WHERE num = #{num}
 	</select>
 	
-	<select id="selectPass" parameterType="boardDto">
+	<select id="selectPass" parameterType="boardDto"> 
 		SELECT pass FROM board WHERE num = #{num}
 	</select>
 	
