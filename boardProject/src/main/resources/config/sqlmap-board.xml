@@ -15,7 +15,7 @@
 	</select> 
 	
 	<select id="selectNum" resultType="int">    
-		SELECT max(num) from BOARD
+		SELECT max(num) from BOARD  
 	</select>
 	 
 	<update id="replyUpdate" parameterType="boardDto">

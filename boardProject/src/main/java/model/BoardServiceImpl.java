@@ -3,15 +3,23 @@ package model;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class BoardServiceImpl implements BoardService{
+	
+	@Autowired
 	private BoardDao boardDao;
+	
+	public BoardServiceImpl(BoardDao boardDao) {
+		this.boardDao = boardDao;
+	}
 	
 	public BoardDao getBoardDao() {
 		return boardDao;
 	}
+	
 	public void setBoardDao(BoardDao boardDao) {
 		this.boardDao = boardDao;
 	}
