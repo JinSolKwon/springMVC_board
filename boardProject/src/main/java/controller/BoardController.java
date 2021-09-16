@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,19 +33,20 @@ import model.BoardService;
 
 @Controller
 @SessionAttributes("BoardDto")
-public class BoardController{
-	private BoardService boardService;
+public class BoardController{ 
+	
+	private BoardService boardService;  
 	
 	private static final String FILE_PATH ="d:\\javastudy\\jspupload";
-
+	 
 	public void setBoardService(BoardService boardService) {
-		this.boardService = boardService;
-	}
-	
+		this.boardService = boardService;  
+	} 
+	 
 	@RequestMapping(value="/board/list") 
 	public String list(@RequestParam(name="pageNum", required=false, defaultValue="0")int pageNum ,
 			Model model, HttpSession session) {
-		
+		   
 		if (pageNum == 0) {
 		pageNum = 1; 
 		}
