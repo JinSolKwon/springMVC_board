@@ -36,7 +36,7 @@
 		<tr>
 			<td>
 				<input type="submit" value="삭제">
-				<input type="button" value="목록" onClick="document.location.href='<c:url value="/board/list"/>'">
+				<input type="button" value="목록" onClick="document.location.href='<c:url value="/board/list?pageNum=${pageNum}"/>'">
 			</td>
 		</tr>
 	</table>	
